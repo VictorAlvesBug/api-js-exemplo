@@ -1,0 +1,58 @@
+{
+    "alunos": {
+        "validation": {
+            "nome": {
+                "type": "string",
+                "regex": "^([^\\s]{3,})(\\s[^\\s]+)*$",
+                "regexDescription": "O primeiro nome deve conter pelo menos 3 caracteres e os demais nomes, caso informados, devem ser separados por apenas 1 espaço",
+                "allowDuplicates": false
+            },
+            "email": {
+                "type": "string",
+                "regex": "^([a-zA-Z\\d_]+)@([a-zA-Z\\d_]+)(\\.([a-zA-Z\\d_]+))+$",
+                "nullable": true,
+                "allowDuplicates": false
+            },
+            "sexo": {
+                "type": "string",
+                "enum": [
+                    "M",
+                    "F",
+                    "P"
+                ]
+            },
+            "codigo": {
+                "type": "string",
+                "regex": "^[a-f\\d]{32}$",
+                "isIdentityField": true,
+                "allowDuplicates": false
+            },
+            "dataHoraCadastro": {
+                "type": "string",
+                "regex": "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}\\.\\d{3}$"
+            },
+            "ativo": {
+                "type": "boolean",
+                "isActivationField": true
+            }
+        },
+        "data": [
+            {
+                "nome": "Primeiro Aluno",
+                "email": "testa@gmail.com",
+                "sexo": "M",
+                "ativo": true,
+                "codigo": "570e669ff645c9e91aea310ddd5e6ce2",
+                "dataHoraCadastro": "2022-09-17 19:57:43.421"
+            },
+            {
+                "nome": "Segundo Aluno",
+                "email": "testando@gmail.com",
+                "sexo": "F",
+                "codigo": "af07bc9bd6f0e51dfcc07a463bc1ea9e",
+                "dataHoraCadastro": "2022-09-17 20:14:13.179",
+                "ativo": false
+            }
+        ]
+    }
+}

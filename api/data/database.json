@@ -44,14 +44,6 @@
                 "ativo": true,
                 "codigo": "570e669ff645c9e91aea310ddd5e6ce2",
                 "dataHoraCadastro": "2022-09-17 19:57:43.421"
-            },
-            {
-                "nome": "Segundo Aluno",
-                "email": "testando@gmail.com",
-                "sexo": "F",
-                "codigo": "af07bc9bd6f0e51dfcc07a463bc1ea9e",
-                "dataHoraCadastro": "2022-09-17 20:14:13.179",
-                "ativo": false
             }
         ]
     }

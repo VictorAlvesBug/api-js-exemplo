@@ -4,6 +4,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const config = require('config');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('../swagger_output.json');
+
 module.exports = () => {
     const app = express();
 
@@ -12,6 +15,7 @@ module.exports = () => {
 
     // Middlewares
     app.use(bodyParser.json());
+    app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
     require('../api/routes/defaultRoute')(app);
     require('../api/routes/alunoRoute')(app);

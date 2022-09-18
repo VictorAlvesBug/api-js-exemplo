@@ -3,15 +3,34 @@ const databaseUtils = require('./databaseUtils')();
 module.exports = () => {
   const alunoUtils = {};
 
-  alunoUtils.listar = (incluirDesativados) => {
-    return databaseUtils
-      .listar('alunos', incluirDesativados?.toLowerCase() === 'true');
+  alunoUtils.listar = ({ incluirDesativados, nome, email, sexo }) => {
+    if (!nome && !email && !sexo) {
+      incluirDesativados = Boolean(
+        incluirDesativados?.toLowerCase() === 'true'
+      );
+      return databaseUtils.listar('alunos', incluirDesativados);
+    }
+
+    const callbackFiltro = (aluno) => {
+      return (
+        (!nome || aluno.nome.toLowerCase().includes(nome.toLowerCase())) &&
+        (!email || aluno.email.toLowerCase().includes(email.toLowerCase())) &&
+        (!sexo || aluno.sexo.toLowerCase().includes(sexo.toLowerCase()))
+      );
+    };
+
+    return databaseUtils.listarPorFiltro({
+      nomeRecurso: 'alunos',
+      callback: callbackFiltro,
+    });
   };
 
   alunoUtils.cadastrar = (aluno) => {
     aluno.codigo = databaseUtils.gerarId();
     aluno.dataHoraCadastro = databaseUtils.retornarDataAtual();
     aluno.ativo = true;
+
+    aluno.email = aluno.email?.toLowerCase();
 
     const validacao = databaseUtils.validarCadastro('alunos', aluno);
 
@@ -64,7 +83,9 @@ module.exports = () => {
       };
     }
 
-    aluno = {...alunoDatabase.dados, ...aluno};
+    aluno = { ...alunoDatabase.dados, ...aluno };
+
+    aluno.email = aluno.email?.toLowerCase();
 
     const validacao = databaseUtils.validarEdicao('alunos', aluno);
 

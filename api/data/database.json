@@ -17,7 +17,7 @@
             },
             "email": {
                 "type": "string",
-                "regex": "^([a-zA-Z\\d_]+)@([a-zA-Z\\d_]+)(\\.([a-zA-Z\\d_]+))+$",
+                "regex": "^([a-z\\d_\\.]+)@([a-z\\d_]+)(\\.([a-z\\d_]+))+$",
                 "nullable": false,
                 "allowDuplicates": false
             },
@@ -45,7 +45,7 @@
                 "nome": "Primeiro Aluno",
                 "email": "testa@gmail.com",
                 "sexo": "M",
-                "ativo": true,
+                "ativo": false,
                 "codigo": "570e669ff645c9e91aea310ddd5e6ce2",
                 "dataHoraCadastro": "2022-09-17 19:57:43.421"
             },
@@ -55,7 +55,7 @@
                 "sexo": null,
                 "codigo": "277de2d22bf874d0d3242053ab54d3a8",
                 "dataHoraCadastro": "2022-09-18 15:04:56.905",
-                "ativo": true
+                "ativo": false
             },
             {
                 "nome": "Terceiro Aluno",
@@ -64,6 +64,62 @@
                 "codigo": "2bf6edd72ce3c1fdb99aa43aa4c8ba6c",
                 "dataHoraCadastro": "2022-09-18 15:11:44.056",
                 "ativo": false
+            },
+            {
+                "nome": "Victor Alves",
+                "email": "victor.alves@gmail.com",
+                "sexo": "M",
+                "codigo": "ee4f28838b1f565ef1b72c99baa6cf81",
+                "dataHoraCadastro": "2022-09-18 16:01:30.680",
+                "ativo": true
+            },
+            {
+                "nome": "Victor Dias",
+                "email": "victor.dias@gmail.com",
+                "sexo": "M",
+                "codigo": "48b7f8b9530a5b3634c21655d91cfbfd",
+                "dataHoraCadastro": "2022-09-18 16:01:59.065",
+                "ativo": true
+            },
+            {
+                "nome": "Ali Tannouri",
+                "email": "ali.tannouri@gmail.com",
+                "sexo": "M",
+                "codigo": "377e94a905c37c3496d3a99bba8fa44d",
+                "dataHoraCadastro": "2022-09-18 16:02:17.059",
+                "ativo": true
+            },
+            {
+                "nome": "Matheus Ciribeli",
+                "email": "matheus.ciribeli@gmail.com",
+                "sexo": "M",
+                "codigo": "e340a19a5193237d951926b3916e2874",
+                "dataHoraCadastro": "2022-09-18 16:03:06.480",
+                "ativo": true
+            },
+            {
+                "nome": "Pedro Rossi",
+                "email": "pedro.rossi@gmail.com",
+                "sexo": "M",
+                "codigo": "38a0587cbccc7fc2871502aaf02fcaec",
+                "dataHoraCadastro": "2022-09-18 16:05:51.785",
+                "ativo": true
+            },
+            {
+                "nome": "Fulane de Tel",
+                "email": "fulane.tel@gmail.com",
+                "sexo": "P",
+                "codigo": "70cc47328258d01b9a7dc2c4a382adae",
+                "dataHoraCadastro": "2022-09-18 16:06:40.148",
+                "ativo": true
+            },
+            {
+                "nome": "Jane Doe",
+                "email": "jane.doe@gmail.com",
+                "sexo": "F",
+                "codigo": "66b1564a3804b22a6833f4feccb599ef",
+                "dataHoraCadastro": "2022-09-18 16:07:48.958",
+                "ativo": true
             }
         ]
     },

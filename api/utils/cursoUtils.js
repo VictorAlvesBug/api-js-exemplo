@@ -3,9 +3,26 @@ const databaseUtils = require('./databaseUtils')();
 module.exports = () => {
   const cursoUtils = {};
 
-  cursoUtils.listar = (incluirDesativados) => {
-    return databaseUtils
-      .listar('cursos', incluirDesativados?.toLowerCase() === 'true');
+  cursoUtils.listar = ({ incluirDesativados, nome, sigla, modalidade }) => {
+    if (!nome && !sigla && !modalidade) {
+      incluirDesativados = Boolean(
+        incluirDesativados?.toLowerCase() === 'true'
+      );
+      return databaseUtils.listar('cursos', incluirDesativados);
+    }
+
+    const callbackFiltro = (curso) => {
+      return (
+        (!nome || curso.nome.toLowerCase().includes(nome.toLowerCase())) &&
+        (!sigla || curso.sigla.toLowerCase().includes(sigla.toLowerCase())) &&
+        (!modalidade || curso.modalidade.toLowerCase().includes(modalidade.toLowerCase()))
+      );
+    };
+
+    return databaseUtils.listarPorFiltro({
+      nomeRecurso: 'cursos',
+      callback: callbackFiltro,
+    });
   };
 
   cursoUtils.cadastrar = (curso) => {
@@ -65,8 +82,6 @@ module.exports = () => {
     }
 
     curso = {...cursoDatabase.dados, ...curso};
-
-    console.log(curso)
 
     const validacao = databaseUtils.validarEdicao('cursos', curso);
 

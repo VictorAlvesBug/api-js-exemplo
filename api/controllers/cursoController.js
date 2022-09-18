@@ -4,7 +4,7 @@ module.exports = () => {
   const cursoController = {};
 
   cursoController.listar = (req, res) => {
-    return res.status(200).json(cursoUtils.listar(req.query.incluirDesativados));
+    return res.status(200).json(cursoUtils.listar(req.query));
   };
 
   cursoController.cadastrar = (req, res) => {

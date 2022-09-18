@@ -76,8 +76,8 @@ module.exports = () => {
       .find((recurso) => recurso[attrIdentificador] === identificador);
   };
 
-  const retornarPorCallback = ({ nomeRecurso, callback }) => {
-    return databaseUtils.listar(nomeRecurso).find(callback);
+  databaseUtils.listarPorFiltro = ({ nomeRecurso, callback }) => {
+    return databaseUtils.listar(nomeRecurso).filter(callback);
   };
 
   const editarPorIdentificador = ({ nomeRecurso, identificador, recurso }) => {
@@ -336,7 +336,7 @@ module.exports = () => {
       identificador_ou_callback,
       { nomeRecurso, identificador_ou_callback },
       retornarPorIdentificador,
-      retornarPorCallback
+      databaseUtils.listarPorFiltro
     );
   };
 
@@ -371,6 +371,8 @@ module.exports = () => {
   databaseUtils.validarEdicao = (nomeRecurso, recurso) => {
     return validar(nomeRecurso, recurso, 'edição');
   };
+
+  //databaseUtils.innerJoin()
 
   return databaseUtils;
 };

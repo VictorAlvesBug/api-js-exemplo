@@ -4,7 +4,7 @@ module.exports = () => {
   const alunoController = {};
 
   alunoController.listar = (req, res) => {
-    return res.status(200).json(alunoUtils.listar(req.query.incluirDesativados));
+    return res.status(200).json(alunoUtils.listar(req.query));
   };
 
   alunoController.cadastrar = (req, res) => {

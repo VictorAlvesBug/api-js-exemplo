@@ -1,5 +1,6 @@
 // API baseada no tutorial https://medium.com/xp-inc/https-medium-com-tiago-jlima-developer-criando-uma-api-restful-com-nodejs-e-express-9cc1a2c9d4d8
 
+const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const config = require('config');
@@ -17,8 +18,12 @@ module.exports = () => {
     app.use(bodyParser.json());
     app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-    require('../api/routes/defaultRoute')(app);
-    require('../api/routes/alunoRoute')(app);
+    const routesDir = './api/routes/';
+
+    fs.readdirSync(routesDir).forEach((file) => {
+        require(`../api/routes/${file.replace('.js', '')}`)(app);
+    });
+
 
     return app;
 };

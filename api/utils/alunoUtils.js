@@ -5,7 +5,7 @@ module.exports = () => {
 
   alunoUtils.listar = (incluirDesativados) => {
     return databaseUtils
-      .listarRecurso('alunos', incluirDesativados?.toLowerCase() === 'true');
+      .listar('alunos', incluirDesativados?.toLowerCase() === 'true');
   };
 
   alunoUtils.cadastrar = (aluno) => {
@@ -39,7 +39,7 @@ module.exports = () => {
   };
 
   alunoUtils.retornar = (codigo) => {
-    const retorno = databaseUtils.retornarRecurso('alunos', codigo);
+    const retorno = databaseUtils.retornar('alunos', codigo);
 
     if (retorno) {
       return {
@@ -64,9 +64,7 @@ module.exports = () => {
       };
     }
 
-    aluno.codigo = alunoDatabase.dados.codigo;
-    aluno.dataHoraCadastro = alunoDatabase.dados.dataHoraCadastro;
-    aluno.ativo = alunoDatabase.dados.ativo;
+    aluno = {...alunoDatabase.dados, ...aluno};
 
     const validacao = databaseUtils.validarEdicao('alunos', aluno);
 

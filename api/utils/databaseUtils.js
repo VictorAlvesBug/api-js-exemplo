@@ -1,29 +1,12 @@
 const fs = require('fs');
 const database = require('../data/database.json');
-  
-  const databaseFreezed = database;
+
+const databaseFreezed = database;
 
 Object.freeze(databaseFreezed);
 
 module.exports = () => {
   const databaseUtils = {};
-
-  databaseUtils.retornarDataAtual = () => {
-    // Recupera horário UTC
-    let agora = new Date();
-    // Aplica fuso-horário de Brasília
-    const fusoHorarioBrasilia = -3;
-    agora.setHours(agora.getHours() + fusoHorarioBrasilia);
-    // Ajusta formato para ficar 'yyyy-mm-dd HH:mm:ss'
-    return agora.toJSON().replace('T', ' ').replace('Z', '');
-  };
-
-  databaseUtils.gerarId = () => {
-    const S4 = () => {
-      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-    };
-    return S4() + S4() + S4() + S4() + S4() + S4() + S4() + S4();
-  };
 
   const retornarAtributoAtivacao = (nomeRecurso) => {
     const listaValicacoes = Object.entries(database[nomeRecurso].validation);
@@ -36,9 +19,9 @@ module.exports = () => {
       return;
     }
 
-    const [atributoAtivacao, _] = parEncontrado;
+    const [attrAtivacao, _] = parEncontrado;
 
-    return atributoAtivacao;
+    return attrAtivacao;
   };
 
   const retornarAtributoIdentificador = (nomeRecurso) => {
@@ -52,20 +35,24 @@ module.exports = () => {
       return;
     }
 
-    const [atributoIdentificador, _] = parEncontrado;
+    const [attrIdentificador, _] = parEncontrado;
 
-    return atributoIdentificador;
+    return attrIdentificador;
   };
 
   const salvar = () => {
     const qtdeEspacosIndentar = 4;
-    const databaseSalvar = databaseFreezed;
+    const databaseSalvar = { ...databaseFreezed };
 
     Object.entries(database).forEach(([nomeRecurso, recurso]) => {
       databaseSalvar[nomeRecurso].data = recurso.data;
     });
 
-    const strDatabase = JSON.stringify(databaseSalvar, null, qtdeEspacosIndentar);
+    const strDatabase = JSON.stringify(
+      databaseSalvar,
+      null,
+      qtdeEspacosIndentar
+    );
 
     fs.writeFile('./api/data/database.json', strDatabase, (err) => {
       if (err) {
@@ -74,33 +61,37 @@ module.exports = () => {
     });
   };
 
-  databaseUtils.listarRecurso = (nomeRecurso, incluirDesativados = false) => {
-    const atributoAtivacao = retornarAtributoAtivacao(nomeRecurso);
-    if(incluirDesativados){
-      return database[nomeRecurso].data;
+  const retornarPorIdentificador = ({ nomeRecurso, identificador }) => {
+    const attrIdentificador = retornarAtributoIdentificador(nomeRecurso);
+
+    if (!attrIdentificador) {
+      console.log(
+        `Busca não permitida, pois o recurso '${nomeRecurso}' não possui nenhuma coluna de identidade`
+      );
+      return;
     }
-    
-    return database[nomeRecurso].data.filter(recurso => recurso[atributoAtivacao] === true);
+
+    return databaseUtils
+      .listar(nomeRecurso)
+      .find((recurso) => recurso[attrIdentificador] === identificador);
   };
 
-  databaseUtils.retornarRecurso = (nomeRecurso, identificador) => {
-    const atributoIdentificador = retornarAtributoIdentificador(nomeRecurso);
-    return databaseUtils.listarRecurso(nomeRecurso).find(
-      (recurso) => recurso[atributoIdentificador] === identificador
-    );
+  const retornarPorCallback = ({ nomeRecurso, callback }) => {
+    return databaseUtils.listar(nomeRecurso).find(callback);
   };
 
-  databaseUtils.cadastrar = (nomeRecurso, recurso) => {
-    database[nomeRecurso].data.push(recurso);
-    salvar();
-    return recurso;
-  };
+  const editarPorIdentificador = ({ nomeRecurso, identificador, recurso }) => {
+    const attrIdentificador = retornarAtributoIdentificador(nomeRecurso);
 
-  databaseUtils.editar = (nomeRecurso, identificador, recurso) => {
-    const atributoIdentificador = retornarAtributoIdentificador(nomeRecurso);
+    if (!attrIdentificador) {
+      console.log(
+        `Edição não permitida, pois o recurso '${nomeRecurso}' não possui nenhuma coluna de identidade`
+      );
+      return;
+    }
 
     database[nomeRecurso].data = database[nomeRecurso].data.map((item) => {
-      if (item[atributoIdentificador] === identificador) {
+      if (item[attrIdentificador] === identificador) {
         return { ...item, ...recurso };
       }
       return item;
@@ -108,28 +99,114 @@ module.exports = () => {
 
     salvar();
 
-    return databaseUtils.retornarRecurso(nomeRecurso, identificador);
+    return databaseUtils.retornar(nomeRecurso, identificador);
   };
 
-  databaseUtils.deletar = (nomeRecurso, identificador) => {
-    const atributoIdentificador = retornarAtributoIdentificador(nomeRecurso);
-    const atributoAtivacao = retornarAtributoAtivacao(nomeRecurso);
-
-    let qtdeItensAlterados = 0;
-    database[nomeRecurso].data = databaseUtils.listarRecurso(nomeRecurso)
-    .map((item) => {
-      if (
-        item[atributoIdentificador] === identificador
-      ) {
-        qtdeItensAlterados++;
-        item[atributoAtivacao] = false;
+  const editarPorCallback = ({ nomeRecurso, callback, recurso }) => {
+    database[nomeRecurso].data = database[nomeRecurso].data.map((item) => {
+      if (callback(item)) {
+        return { ...item, ...recurso };
       }
       return item;
     });
 
     salvar();
 
+    return databaseUtils.retornar(nomeRecurso, callback);
+  };
+
+  const deletarPorIdentificador = ({ nomeRecurso, identificador }) => {
+    const attrIdentificador = retornarAtributoIdentificador(nomeRecurso);
+    const attrAtivacao = retornarAtributoAtivacao(nomeRecurso);
+
+    if (!attrIdentificador) {
+      console.log(
+        `Exclusão não permitida, pois o recurso '${nomeRecurso}' não possui nenhuma coluna de identidade`
+      );
+      return;
+    }
+
+    let qtdeItensAlterados = 0;
+    if (attrAtivacao) {
+      database[nomeRecurso].data = databaseUtils
+        .listar(nomeRecurso, (incluirDesativados = true))
+        .map((item) => {
+          if (
+            item[attrIdentificador] === identificador &&
+            item[attrAtivacao] === true
+          ) {
+            qtdeItensAlterados++;
+            item[attrAtivacao] = false;
+          }
+          return item;
+        });
+    } else {
+      database[nomeRecurso].data = databaseUtils
+        .listar(nomeRecurso)
+        .filter((item) => item[attrIdentificador] !== identificador);
+    }
+
+    salvar();
+
     return qtdeItensAlterados > 0;
+  };
+
+  const deletarPorCallback = ({ nomeRecurso, callback }) => {
+    const attrAtivacao = retornarAtributoAtivacao(nomeRecurso);
+
+    let qtdeItensAlterados = 0;
+
+    if (attrAtivacao) {
+      database[nomeRecurso].data = databaseUtils
+        .listar(nomeRecurso, (incluirDesativados = true))
+        .map((item) => {
+          if (callback(item)) {
+            qtdeItensAlterados++;
+            item[attrAtivacao] = false;
+          }
+          return item;
+        });
+    } else {
+      database[nomeRecurso].data = databaseUtils
+        .listar(nomeRecurso)
+        .filter((item) => !callback(item));
+    }
+
+    salvar();
+
+    return qtdeItensAlterados > 0;
+  };
+
+  const executarPorIdentificadorOuCallback = (
+    identificador_ou_callback,
+    params,
+    executarPorIdentificador,
+    executarPorCallback
+  ) => {
+    const tipoParametro = typeof identificador_ou_callback;
+
+    const tiposIdentificador = ['number', 'string', 'bigint'];
+    const ehBuscaPorIdentificador = tiposIdentificador.includes(tipoParametro);
+
+    const tiposCallback = ['function'];
+    const ehBuscaPorCallback = tiposCallback.includes(tipoParametro);
+
+    if (ehBuscaPorIdentificador) {
+      return executarPorIdentificador({
+        ...params,
+        identificador: identificador_ou_callback,
+      });
+    }
+
+    if (ehBuscaPorCallback) {
+      return executarPorCallback({
+        ...params,
+        callback: identificador_ou_callback,
+      });
+    }
+
+    console.log(`Parâmetro de busca do tipo '${tipoParametro}' não é válido`);
+    return;
   };
 
   const validar = (nomeRecurso, recurso, modoValidacao) => {
@@ -176,28 +253,35 @@ module.exports = () => {
 
       // Validar se o atributo aceita duplicatas
       if (validacao.allowDuplicates === false) {
-        const atributoIdentificador =
-          retornarAtributoIdentificador(nomeRecurso);
+        const attrIdentificador = retornarAtributoIdentificador(nomeRecurso);
+
+        if (!attrIdentificador) {
+          console.log(
+            `Validação não permitida, pois o recurso '${nomeRecurso}' não possui nenhuma coluna de identidade`
+          );
+          return;
+        }
+
         let qtdeItensRecursoComAtributoIdentico;
 
-        if(modoValidacao === 'edição')
-        {
+        if (modoValidacao === 'edição') {
           qtdeItensRecursoComAtributoIdentico = databaseUtils
-          .listarRecurso(nomeRecurso)
-          .filter((item) => item[nomeAtributo] === atributo &&
-          item[atributoIdentificador] !== recurso[atributoIdentificador]).length;
-        }
-        else{
+            .listar(nomeRecurso)
+            .filter(
+              (item) =>
+                item[nomeAtributo] === atributo &&
+                item[attrIdentificador] !== recurso[attrIdentificador]
+            ).length;
+        } else {
           qtdeItensRecursoComAtributoIdentico = databaseUtils
-          .listarRecurso(nomeRecurso)
-          .filter((item) => item[nomeAtributo] === atributo).length;
+            .listar(nomeRecurso)
+            .filter((item) => item[nomeAtributo] === atributo).length;
         }
 
         if (atributo && qtdeItensRecursoComAtributoIdentico > 0) {
           ehValido = false;
           listaErros.push(`${nomeAtributo} '${atributo}' já cadastrado`);
         }
-
       }
 
       // Validar se o atributo segue o enum pré-definido
@@ -217,6 +301,67 @@ module.exports = () => {
     });
 
     return { ehValido, listaErros };
+  };
+
+  databaseUtils.retornarDataAtual = () => {
+    // Recupera horário UTC
+    let agora = new Date();
+    // Aplica fuso-horário de Brasília
+    const fusoHorarioBrasilia = -3;
+    agora.setHours(agora.getHours() + fusoHorarioBrasilia);
+    // Ajusta formato para ficar 'yyyy-mm-dd HH:mm:ss'
+    return agora.toJSON().replace('T', ' ').replace('Z', '');
+  };
+
+  databaseUtils.gerarId = () => {
+    const S4 = () => {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    };
+    return S4() + S4() + S4() + S4() + S4() + S4() + S4() + S4();
+  };
+
+  databaseUtils.listar = (nomeRecurso, incluirDesativados = false) => {
+    const attrAtivacao = retornarAtributoAtivacao(nomeRecurso);
+    if (incluirDesativados) {
+      return database[nomeRecurso].data;
+    }
+
+    return database[nomeRecurso].data.filter(
+      (recurso) => !attrAtivacao || recurso[attrAtivacao] === true
+    );
+  };
+
+  databaseUtils.retornar = (nomeRecurso, identificador_ou_callback) => {
+    return executarPorIdentificadorOuCallback(
+      identificador_ou_callback,
+      { nomeRecurso, identificador_ou_callback },
+      retornarPorIdentificador,
+      retornarPorCallback
+    );
+  };
+
+  databaseUtils.cadastrar = (nomeRecurso, recurso) => {
+    database[nomeRecurso].data.push(recurso);
+    salvar();
+    return recurso;
+  };
+
+  databaseUtils.editar = (nomeRecurso, identificador_ou_callback, recurso) => {
+    return executarPorIdentificadorOuCallback(
+      identificador_ou_callback,
+      { nomeRecurso, identificador_ou_callback, recurso },
+      editarPorIdentificador,
+      editarPorCallback
+    );
+  };
+
+  databaseUtils.deletar = (nomeRecurso, identificador_ou_callback) => {
+    return executarPorIdentificadorOuCallback(
+      identificador_ou_callback,
+      { nomeRecurso, identificador_ou_callback },
+      deletarPorIdentificador,
+      deletarPorCallback
+    );
   };
 
   databaseUtils.validarCadastro = (nomeRecurso, recurso) => {

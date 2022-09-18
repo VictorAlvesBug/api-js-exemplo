@@ -1,16 +1,24 @@
 {
     "alunos": {
         "validation": {
+            "codigo": {
+                "type": "string",
+                "regex": "^[a-f\\d]{32}$",
+                "isIdentityField": true,
+                "nullable": false,
+                "allowDuplicates": false
+            },
             "nome": {
                 "type": "string",
                 "regex": "^([^\\s]{3,})(\\s[^\\s]+)*$",
                 "regexDescription": "O primeiro nome deve conter pelo menos 3 caracteres e os demais nomes, caso informados, devem ser separados por apenas 1 espaço",
+                "nullable": false,
                 "allowDuplicates": false
             },
             "email": {
                 "type": "string",
                 "regex": "^([a-zA-Z\\d_]+)@([a-zA-Z\\d_]+)(\\.([a-zA-Z\\d_]+))+$",
-                "nullable": true,
+                "nullable": false,
                 "allowDuplicates": false
             },
             "sexo": {
@@ -21,19 +29,15 @@
                     "P"
                 ]
             },
-            "codigo": {
-                "type": "string",
-                "regex": "^[a-f\\d]{32}$",
-                "isIdentityField": true,
-                "allowDuplicates": false
-            },
             "dataHoraCadastro": {
                 "type": "string",
-                "regex": "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}\\.\\d{3}$"
+                "regex": "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}\\.\\d{3}$",
+                "nullable": false
             },
             "ativo": {
                 "type": "boolean",
-                "isActivationField": true
+                "isActivationField": true,
+                "nullable": false
             }
         },
         "data": [
@@ -44,7 +48,131 @@
                 "ativo": true,
                 "codigo": "570e669ff645c9e91aea310ddd5e6ce2",
                 "dataHoraCadastro": "2022-09-17 19:57:43.421"
+            },
+            {
+                "nome": "Segundo Cara",
+                "email": "testa2@gmail.com",
+                "sexo": null,
+                "codigo": "277de2d22bf874d0d3242053ab54d3a8",
+                "dataHoraCadastro": "2022-09-18 15:04:56.905",
+                "ativo": true
+            },
+            {
+                "nome": "Terceiro Aluno",
+                "email": "testa3@gmail.com",
+                "sexo": "F",
+                "codigo": "2bf6edd72ce3c1fdb99aa43aa4c8ba6c",
+                "dataHoraCadastro": "2022-09-18 15:11:44.056",
+                "ativo": false
             }
         ]
+    },
+    "cursos": {
+        "validation": {
+            "codigo": {
+                "type": "string",
+                "regex": "^[a-f\\d]{32}$",
+                "isIdentityField": true,
+                "nullable": false,
+                "allowDuplicates": false
+            },
+            "sigla": {
+                "type": "string",
+                "regex": "^(\\d{1,3}[A-Z]{2,5})$",
+                "regexDescription": "A sigla deve ser formada pelo número da turma e pelas iniciais do curso em caixa alta",
+                "nullable": false,
+                "allowDuplicates": false
+            },
+            "nome": {
+                "type": "string",
+                "regex": "^([^\\s]{3,})(\\s[^\\s]+)*$",
+                "regexDescription": "O primeiro nome do curso deve conter pelo menos 3 caracteres e os demais nomes, caso informados, devem ser separados por apenas 1 espaço",
+                "nullable": false,
+                "allowDuplicates": false
+            },
+            "modalidade": {
+                "type": "string",
+                "enum": [
+                    "Presencial",
+                    "On-Line",
+                    "Live"
+                ],
+                "nullable": false
+            },
+            "dataInicio": {
+                "type": "string",
+                "regex": "^\\d{4}-\\d{2}-\\d{2}$",
+                "nullable": false
+            },
+            "dataTermino": {
+                "type": "string",
+                "regex": "^\\d{4}-\\d{2}-\\d{2}$",
+                "nullable": false
+            },
+            "dataHoraCadastro": {
+                "type": "string",
+                "regex": "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}\\.\\d{3}$",
+                "nullable": false
+            },
+            "ativo": {
+                "type": "boolean",
+                "nullable": false,
+                "isActivationField": true
+            }
+        },
+        "data": [
+            {
+                "nome": "FullStack Development",
+                "sigla": "43SCJ",
+                "modalidade": "Presencial",
+                "dataInicio": "2022-03-29",
+                "dataTermino": "2023-04-05",
+                "codigo": "03be0855613dc004fc5edcfefcf04861",
+                "dataHoraCadastro": "2022-09-18 15:35:43.448",
+                "ativo": true
+            },
+            {
+                "nome": "Análise e Desenvolvimento de Sistemas",
+                "sigla": "1ADS",
+                "modalidade": "Presencial",
+                "dataInicio": "2022-02-01",
+                "dataTermino": "2022-11-20",
+                "codigo": "1f27dd250cf23866517260d09cf7c361",
+                "dataHoraCadastro": "2022-09-18 15:39:01.693",
+                "ativo": true
+            },
+            {
+                "nome": "Cadastrando Curso Para Depois Deletar",
+                "sigla": "123TESTE",
+                "modalidade": "Live",
+                "dataInicio": "2022-02-01",
+                "dataTermino": "2022-11-20",
+                "codigo": "719914d6cdb88c06d68c389be5b8f6e4",
+                "dataHoraCadastro": "2022-09-18 15:45:29.428",
+                "ativo": false
+            }
+        ]
+    },
+    "alunos_cursos": {
+        "validation": {
+            "codigo": {
+                "type": "string",
+                "regex": "^[a-f\\d]{32}$",
+                "isIdentityField": true,
+                "nullable": false,
+                "allowDuplicates": false
+            },
+            "codigoAluno": {
+                "type": "string",
+                "regex": "^[a-f\\d]{32}$",
+                "nullable": false
+            },
+            "codigoCurso": {
+                "type": "string",
+                "regex": "^[a-f\\d]{32}$",
+                "nullable": false
+            }
+        },
+        "data": []
     }
 }

@@ -41,7 +41,7 @@ module.exports = () => {
     const retorno = alunoUtils.deletar(req.params.codigo);
 
     if (retorno.sucesso) {
-      return res.status(203).json(retorno);
+      return res.status(204).json(retorno);
     }
 
     return res.status(400).json(retorno);

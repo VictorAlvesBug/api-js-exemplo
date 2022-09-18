@@ -8,6 +8,33 @@ Object.freeze(databaseFreezed);
 module.exports = () => {
   const databaseUtils = {};
 
+  Array.prototype.definirNomeRecurso = function (nomeRecurso) {
+    this.nomeRecurso = nomeRecurso;
+    return this;
+  };
+
+  Array.prototype.innerJoin = function (nomeRecursoB, callbackRelacao) {
+    const listaRecursoA = this;
+    const nomeRecursoA = this.nomeRecurso;
+
+    const listaResultado = [];
+
+    listaRecursoA.forEach((recursoA) => {
+      const listaRecursoB = databaseUtils.listar(nomeRecursoB);
+
+      listaRecursoB.forEach((recursoB) => {
+        if (callbackRelacao(recursoA, recursoB)) {
+          const itemResultado = {};
+          itemResultado[nomeRecursoA] = recursoA;
+          itemResultado[nomeRecursoB] = recursoB;
+          listaResultado.push(itemResultado);
+        }
+      });
+    });
+
+    return listaResultado;
+  };
+
   const retornarAtributoAtivacao = (nomeRecurso) => {
     const listaValicacoes = Object.entries(database[nomeRecurso].validation);
 
@@ -73,11 +100,15 @@ module.exports = () => {
 
     return databaseUtils
       .listar(nomeRecurso)
-      .find((recurso) => recurso[attrIdentificador] === identificador);
+      .filter((recurso) => recurso[attrIdentificador] === identificador)
+      .definirNomeRecurso(nomeRecurso);
   };
 
   databaseUtils.listarPorFiltro = ({ nomeRecurso, callback }) => {
-    return databaseUtils.listar(nomeRecurso).filter(callback);
+    return databaseUtils
+      .listar(nomeRecurso)
+      .filter(callback)
+      .definirNomeRecurso(nomeRecurso);
   };
 
   const editarPorIdentificador = ({ nomeRecurso, identificador, recurso }) => {
@@ -99,7 +130,9 @@ module.exports = () => {
 
     salvar();
 
-    return databaseUtils.retornar(nomeRecurso, identificador);
+    return databaseUtils
+      .retornar(nomeRecurso, identificador)
+      .definirNomeRecurso(nomeRecurso);
   };
 
   const editarPorCallback = ({ nomeRecurso, callback, recurso }) => {
@@ -112,7 +145,9 @@ module.exports = () => {
 
     salvar();
 
-    return databaseUtils.retornar(nomeRecurso, callback);
+    return databaseUtils
+      .retornar(nomeRecurso, callback)
+      .definirNomeRecurso(nomeRecurso);
   };
 
   const deletarPorIdentificador = ({ nomeRecurso, identificador }) => {
@@ -160,7 +195,7 @@ module.exports = () => {
       database[nomeRecurso].data = databaseUtils
         .listar(nomeRecurso, (incluirDesativados = true))
         .map((item) => {
-          if (callback(item)) {
+          if (callback(item) && item[attrAtivacao] === true) {
             qtdeItensAlterados++;
             item[attrAtivacao] = false;
           }
@@ -323,12 +358,12 @@ module.exports = () => {
   databaseUtils.listar = (nomeRecurso, incluirDesativados = false) => {
     const attrAtivacao = retornarAtributoAtivacao(nomeRecurso);
     if (incluirDesativados) {
-      return database[nomeRecurso].data;
+      return database[nomeRecurso].data.definirNomeRecurso(nomeRecurso);
     }
 
-    return database[nomeRecurso].data.filter(
-      (recurso) => !attrAtivacao || recurso[attrAtivacao] === true
-    );
+    return database[nomeRecurso].data
+      .filter((recurso) => !attrAtivacao || recurso[attrAtivacao] === true)
+      .definirNomeRecurso(nomeRecurso);
   };
 
   databaseUtils.retornar = (nomeRecurso, identificador_ou_callback) => {
@@ -371,8 +406,6 @@ module.exports = () => {
   databaseUtils.validarEdicao = (nomeRecurso, recurso) => {
     return validar(nomeRecurso, recurso, 'edição');
   };
-
-  //databaseUtils.innerJoin()
 
   return databaseUtils;
 };

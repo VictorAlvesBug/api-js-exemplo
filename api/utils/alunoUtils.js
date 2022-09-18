@@ -83,7 +83,7 @@ module.exports = () => {
       };
     }
 
-    aluno = { ...alunoDatabase.dados, ...aluno };
+    aluno = { ...alunoDatabase.dados[0], ...aluno };
 
     aluno.email = aluno.email?.toLowerCase();
 

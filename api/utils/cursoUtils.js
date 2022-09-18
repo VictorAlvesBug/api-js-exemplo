@@ -81,7 +81,7 @@ module.exports = () => {
       };
     }
 
-    curso = {...cursoDatabase.dados, ...curso};
+    curso = {...cursoDatabase.dados[0], ...curso};
 
     const validacao = databaseUtils.validarEdicao('cursos', curso);
 

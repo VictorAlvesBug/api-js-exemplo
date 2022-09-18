@@ -67,7 +67,7 @@
             },
             {
                 "nome": "Victor Alves",
-                "email": "victor.alves@gmail.com",
+                "email": "testando.alteracao@hotmail.com",
                 "sexo": "M",
                 "codigo": "ee4f28838b1f565ef1b72c99baa6cf81",
                 "dataHoraCadastro": "2022-09-18 16:01:30.680",
@@ -120,6 +120,14 @@
                 "codigo": "66b1564a3804b22a6833f4feccb599ef",
                 "dataHoraCadastro": "2022-09-18 16:07:48.958",
                 "ativo": true
+            },
+            {
+                "nome": "John Doe",
+                "email": "john.doe@gmail.com",
+                "sexo": "M",
+                "codigo": "993865b4f7f23d382dc30d7c96b3e437",
+                "dataHoraCadastro": "2022-09-18 18:45:35.323",
+                "ativo": false
             }
         ]
     },
@@ -206,10 +214,20 @@
                 "codigo": "719914d6cdb88c06d68c389be5b8f6e4",
                 "dataHoraCadastro": "2022-09-18 15:45:29.428",
                 "ativo": false
+            },
+            {
+                "nome": "Cadastrando Curso Para Depois Deletar",
+                "sigla": "321TESTE",
+                "modalidade": "Live",
+                "dataInicio": "2022-02-01",
+                "dataTermino": "2022-11-20",
+                "codigo": "dc7d19b14538297f8ee487f5ecd97072",
+                "dataHoraCadastro": "2022-09-18 18:53:21.098",
+                "ativo": false
             }
         ]
     },
-    "alunos_cursos": {
+    "cursos_alunos": {
         "validation": {
             "codigo": {
                 "type": "string",
@@ -218,17 +236,56 @@
                 "nullable": false,
                 "allowDuplicates": false
             },
+            "codigoCurso": {
+                "type": "string",
+                "regex": "^[a-f\\d]{32}$",
+                "nullable": false
+            },
             "codigoAluno": {
                 "type": "string",
                 "regex": "^[a-f\\d]{32}$",
                 "nullable": false
             },
-            "codigoCurso": {
+            "dataHoraCadastro": {
                 "type": "string",
-                "regex": "^[a-f\\d]{32}$",
+                "regex": "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}\\.\\d{3}$",
                 "nullable": false
+            },
+            "ativo": {
+                "type": "boolean",
+                "nullable": false,
+                "isActivationField": true
             }
         },
-        "data": []
+        "data": [
+            {
+                "codigo": "092950c3e434be7432610dc0dfbdb7c3",
+                "dataHoraCadastro": "2022-09-18 18:23:02.255",
+                "ativo": true,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "ee4f28838b1f565ef1b72c99baa6cf81"
+            },
+            {
+                "codigo": "d91118e29bc2cd36bb7496a37fd716bf",
+                "dataHoraCadastro": "2022-09-18 18:29:59.008",
+                "ativo": false,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "377e94a905c37c3496d3a99bba8fa44d"
+            },
+            {
+                "codigo": "ff4893c2356a502abce9141526ed843a",
+                "dataHoraCadastro": "2022-09-18 18:54:29.608",
+                "ativo": false,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "377e94a905c37c3496d3a99bba8fa44d"
+            },
+            {
+                "codigo": "2034058acf3942c150acf51e75ae29d6",
+                "dataHoraCadastro": "2022-09-18 18:57:21.033",
+                "ativo": false,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "377e94a905c37c3496d3a99bba8fa44d"
+            }
+        ]
     }
 }

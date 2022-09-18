@@ -13,6 +13,7 @@ module.exports = () => {
     // Middlewares
     app.use(bodyParser.json());
 
+    require('../api/routes/defaultRoute')(app);
     require('../api/routes/alunoRoute')(app);
 
     return app;

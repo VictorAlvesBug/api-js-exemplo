@@ -1,6 +1,12 @@
+const fs = require('fs');
 const swaggerAutogen = require('swagger-autogen')();
 
 const outputFile = './swagger_output.json';
-const routesFiles = ['./api/routes/defaultRoute.js', './api/routes/alunoRoute.js']
+let routesFiles = [];
+const routesDir = './api/routes/';
+
+fs.readdirSync(routesDir).forEach((file) => {
+  routesFiles.push(`${routesDir}${file}`);
+});
 
 swaggerAutogen(outputFile, routesFiles);

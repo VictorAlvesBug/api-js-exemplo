@@ -8,16 +8,15 @@ module.exports = () => {
       .retornar('cursos', codigoCurso)
       .innerJoin(
         'cursos_alunos',
-        (curso, curso_aluno) => curso.codigo === curso_aluno.codigoCurso
+        ({ cursos, cursos_alunos }) =>
+          cursos.codigo === cursos_alunos.codigoCurso
       )
-      .map((objJoin) => objJoin.cursos_alunos)
-      .definirNomeRecurso('cursos_alunos')
       .innerJoin(
         'alunos',
-        (curso_aluno, aluno) => curso_aluno.codigoAluno === aluno.codigo
+        ({ cursos, cursos_alunos, alunos }) =>
+          cursos_alunos.codigoAluno === alunos.codigo
       )
-      .map((objJoin) => objJoin.alunos)
-      .definirNomeRecurso('alunos');
+      .map((objJoin) => objJoin.alunos);
   };
 
   cursoAlunoUtils.inscreverAluno = (codigoCurso, codigoAluno) => {

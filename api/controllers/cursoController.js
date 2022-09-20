@@ -1,10 +1,11 @@
 const cursoUtils = require('../utils/cursoUtils')();
+const cursoAlunoUtils = require('../utils/cursoAlunoUtils')();
 
 module.exports = () => {
   const cursoController = {};
 
   cursoController.listar = (req, res) => {
-    return res.status(200).json(cursoUtils.listar(req.query));
+    return res.status(200).json(cursoUtils.listar({...req.params, ...req.query}));
   };
 
   cursoController.cadastrar = (req, res) => {
@@ -18,7 +19,7 @@ module.exports = () => {
   };
 
   cursoController.retornar = (req, res) => {
-      const retorno = cursoUtils.retornar(req.params.codigo);
+      const retorno = cursoUtils.retornar({...req.params, ...req.query});
 
       if(retorno.sucesso) {
           return res.status(200).json(retorno);
@@ -39,6 +40,30 @@ module.exports = () => {
 
   cursoController.deletar = (req, res) => {
     const retorno = cursoUtils.deletar(req.params.codigo);
+
+    if (retorno.sucesso) {
+      return res.status(204).json(retorno);
+    }
+
+    return res.status(400).json(retorno);
+  };
+
+  cursoController.listarAlunos = (req, res) => {
+    return res.status(200).json(cursoAlunoUtils.listarAlunos(req.params.codigo));
+  };
+
+  cursoController.inscreverAluno = (req, res) => {
+    const retorno = cursoAlunoUtils.inscreverAluno(req.params.codigo, req.body.codigoAluno);
+
+    if (retorno.sucesso) {
+      return res.status(201).json(retorno);
+    }
+
+    return res.status(400).json(retorno);
+  };
+
+  cursoController.cancelarInscricaoAluno = (req, res) => {
+    const retorno = cursoAlunoUtils.cancelarInscricaoAluno(req.params.codigo, req.params.codigoAluno);
 
     if (retorno.sucesso) {
       return res.status(204).json(retorno);

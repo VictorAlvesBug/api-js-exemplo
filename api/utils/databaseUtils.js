@@ -8,26 +8,43 @@ Object.freeze(databaseFreezed);
 module.exports = () => {
   const databaseUtils = {};
 
-  Array.prototype.definirNomeRecurso = function (nomeRecurso) {
+  Array.prototype.alias = function (nomeRecurso) {
     this.nomeRecurso = nomeRecurso;
-    return this;
+    return this.map((item) => {
+      item.nomeRecurso = nomeRecurso;
+      return item;
+    });
+  };
+
+  Array.prototype.copy = function () {
+    return [...this];
   };
 
   Array.prototype.innerJoin = function (nomeRecursoB, callbackRelacao) {
     const listaRecursoA = this;
-    const nomeRecursoA = this.nomeRecurso;
-
     const listaResultado = [];
 
     listaRecursoA.forEach((recursoA) => {
+      const nomeRecursoA = recursoA.nomeRecurso;
+
       const listaRecursoB = databaseUtils.listar(nomeRecursoB);
 
       listaRecursoB.forEach((recursoB) => {
-        if (callbackRelacao(recursoA, recursoB)) {
-          const itemResultado = {};
-          itemResultado[nomeRecursoA] = recursoA;
-          itemResultado[nomeRecursoB] = recursoB;
-          listaResultado.push(itemResultado);
+        let params = {};
+        // Caso o recurso tenha nome, significa que é um recurso simples
+        // Caso o recurso não tenha nome, o objeto 'recursoA' na verdade possui
+        // mais de um recurso interno
+        if (nomeRecursoA) {
+          // Adiciona o recurso no item-resposta
+          params[nomeRecursoA] = recursoA;
+        } else {
+          // Espalha os recursos de dentro do objeto no item-resposta
+          params = { ...recursoA };
+        }
+
+        params[nomeRecursoB] = recursoB;
+        if (callbackRelacao(params)) {
+          listaResultado.push(params);
         }
       });
     });
@@ -101,14 +118,16 @@ module.exports = () => {
     return databaseUtils
       .listar(nomeRecurso)
       .filter((recurso) => recurso[attrIdentificador] === identificador)
-      .definirNomeRecurso(nomeRecurso);
+      .copy()
+      .alias(nomeRecurso);
   };
 
   databaseUtils.listarPorFiltro = ({ nomeRecurso, callback }) => {
     return databaseUtils
       .listar(nomeRecurso)
       .filter(callback)
-      .definirNomeRecurso(nomeRecurso);
+      .copy()
+      .alias(nomeRecurso);
   };
 
   const editarPorIdentificador = ({ nomeRecurso, identificador, recurso }) => {
@@ -132,7 +151,8 @@ module.exports = () => {
 
     return databaseUtils
       .retornar(nomeRecurso, identificador)
-      .definirNomeRecurso(nomeRecurso);
+      .copy()
+      .alias(nomeRecurso);
   };
 
   const editarPorCallback = ({ nomeRecurso, callback, recurso }) => {
@@ -147,7 +167,8 @@ module.exports = () => {
 
     return databaseUtils
       .retornar(nomeRecurso, callback)
-      .definirNomeRecurso(nomeRecurso);
+      .copy()
+      .alias(nomeRecurso);
   };
 
   const deletarPorIdentificador = ({ nomeRecurso, identificador }) => {
@@ -358,12 +379,14 @@ module.exports = () => {
   databaseUtils.listar = (nomeRecurso, incluirDesativados = false) => {
     const attrAtivacao = retornarAtributoAtivacao(nomeRecurso);
     if (incluirDesativados) {
-      return database[nomeRecurso].data.definirNomeRecurso(nomeRecurso);
+      return database[nomeRecurso].data
+      .copy().alias(nomeRecurso);
     }
 
     return database[nomeRecurso].data
       .filter((recurso) => !attrAtivacao || recurso[attrAtivacao] === true)
-      .definirNomeRecurso(nomeRecurso);
+      .copy()
+      .alias(nomeRecurso);
   };
 
   databaseUtils.retornar = (nomeRecurso, identificador_ou_callback) => {

@@ -1,6 +1,5 @@
 module.exports = (app) => {
   const cursoController = require('../controllers/cursoController')();
-  const cursoAlunoController = require('../controllers/cursoAlunoController')();
 
   app
     .route('/api/cursos')
@@ -15,10 +14,10 @@ module.exports = (app) => {
 
   app
     .route('/api/cursos/:codigo/alunos')
-    .get(cursoAlunoController.listar)
-    .post(cursoAlunoController.cadastrar);
+    .get(cursoController.listarAlunos)
+    .post(cursoController.inscreverAluno);
 
   app
     .route('/api/cursos/:codigo/alunos/:codigoAluno')
-    .delete(cursoAlunoController.deletar);
+    .delete(cursoController.cancelarInscricaoAluno);
 };

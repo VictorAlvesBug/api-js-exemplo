@@ -285,6 +285,69 @@
                 "ativo": false,
                 "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
                 "codigoAluno": "377e94a905c37c3496d3a99bba8fa44d"
+            },
+            {
+                "codigo": "d2eff8cc45e90dae7293f064e89c2f10",
+                "dataHoraCadastro": "2022-09-19 20:00:03.065",
+                "ativo": false,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "377e94a905c37c3496d3a99bba8fa44d"
+            },
+            {
+                "codigo": "eb68a72436ffa76e5bc80b16b10a7f2f",
+                "dataHoraCadastro": "2022-09-19 20:08:26.387",
+                "ativo": false,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "377e94a905c37c3496d3a99bba8fa44d"
+            },
+            {
+                "codigo": "32e0b9ddb6a3bddae2ffafeb4e9795c7",
+                "dataHoraCadastro": "2022-09-19 22:13:11.067",
+                "ativo": true,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "377e94a905c37c3496d3a99bba8fa44d"
+            },
+            {
+                "codigo": "55259b0b566e634876a3c167cba634f3",
+                "dataHoraCadastro": "2022-09-19 22:19:10.270",
+                "ativo": true,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "48b7f8b9530a5b3634c21655d91cfbfd"
+            },
+            {
+                "codigo": "56ac6aa7ff60952e76b85e83df8c71a0",
+                "dataHoraCadastro": "2022-09-19 22:19:16.654",
+                "ativo": false,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "38a0587cbccc7fc2871502aaf02fcaec"
+            },
+            {
+                "codigo": "dbaa9e04fd4333b94bdaf516af55e8cc",
+                "dataHoraCadastro": "2022-09-19 22:19:23.351",
+                "ativo": true,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "e340a19a5193237d951926b3916e2874"
+            },
+            {
+                "codigo": "66e7751a4ddaa5e8a3f6fe9d01b1bd1f",
+                "dataHoraCadastro": "2022-09-19 22:19:55.293",
+                "ativo": true,
+                "codigoCurso": "03be0855613dc004fc5edcfefcf04861",
+                "codigoAluno": "38a0587cbccc7fc2871502aaf02fcaec"
+            },
+            {
+                "codigo": "794ea93378fef30e8b3e378f3a9bb605",
+                "dataHoraCadastro": "2022-09-19 22:22:39.025",
+                "ativo": true,
+                "codigoCurso": "1f27dd250cf23866517260d09cf7c361",
+                "codigoAluno": "66b1564a3804b22a6833f4feccb599ef"
+            },
+            {
+                "codigo": "1975c4e4b031c2cdd6c938c87da985eb",
+                "dataHoraCadastro": "2022-09-19 22:22:50.161",
+                "ativo": true,
+                "codigoCurso": "1f27dd250cf23866517260d09cf7c361",
+                "codigoAluno": "70cc47328258d01b9a7dc2c4a382adae"
             }
         ]
     }
